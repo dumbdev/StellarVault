@@ -14,6 +14,23 @@ StellarVault is a decentralized, multi-signature treasury and governance system 
 
 ---
 
+## 🛠️ Tech Stack
+
+StellarVault is built using modern tooling across both the on-chain and off-chain layers:
+
+### Smart Contracts (On-Chain)
+- **Rust**: Secure, type-safe programming language.
+- **Soroban SDK**: SDK for authoring smart contracts deployed on the Stellar network.
+- **Cargo**: Build system and test runner for compiled WASM artifacts.
+
+### Web Application (Off-Chain)
+- **Next.js (Pages Router)**: React-based framework for page routing and UI layout.
+- **React**: State management for real-time wallet balances, clock loops, and active proposals.
+- **TypeScript**: Static typing for custom components and props interface safety.
+- **Tailwind CSS**: Utility-first CSS classes for layout layouts and customized dark mode styles.
+
+---
+
 ## 🏗️ System Architecture
 
 StellarVault is structured as an interactive suite of modular Soroban contracts deployed on the Stellar network.
