@@ -24,7 +24,7 @@ StellarHomes makes international property financing secure, transparent, and liq
 *   **Stablecoin Settlement** — All deposits, mortgage loans, milestone payments, and secondary trades settle in USDC on Stellar with sub-cent fees and 3–5 second finality.
 
 ## Stack
-*   **Frontend:** Next.js, TypeScript, Vanilla CSS Modules
+*   **Frontend:** Next.js, TypeScript, TailwindCSS
 *   **Wallet:** Freighter + `@stellar/freighter-api`
 *   **Smart Contracts:** Rust, Soroban SDK v22
 *   **Backend:** Node.js, Express, TypeScript, Stellar SDK (`@stellar/stellar-sdk` v13)
