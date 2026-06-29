@@ -3,7 +3,6 @@
 Thank you for your interest in contributing to **StellarHomes**! We welcome contributions of all kinds, including bug reports, feature requests, documentation improvements, frontend enhancements, and smart contract optimizations.
 
 This guide outlines our development workflow, coding standards, and step-by-step instructions to ensure a smooth contribution process.
-
 ---
 
 ## 🗺️ Table of Contents
