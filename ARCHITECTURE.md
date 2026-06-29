@@ -3,7 +3,6 @@
 ## Core Principle: Separate Compliance & Milestones from Funding
 
 The architecture splits into two layers: a **Compliance & Verification Layer** that establishes land title validity, property valuation, and construction milestones off-chain, and a **Settlement Layer** (Stellar/Soroban) that handles liquidity pool deposits, mortgage issuance, milestone-gated escrow disbursements, and secondary market trading.
-
 ---
 
 ## 1. Compliance & Verification Layer (Off-Chain)
