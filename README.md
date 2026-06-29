@@ -1,167 +1,99 @@
-# StellarVault
+# StellarHomes
+A decentralized, compliant, and automated real estate tokenization and mortgage protocol built on Stellar.
 
-StellarVault is a decentralized, multi-signature treasury and governance system built on the Stellar network using Soroban smart contracts. It provides secure, quorum-based authorization and timelocked execution for managing shared digital assets, ensuring that no single signer can unilaterally control or transfer funds.
+The StellarHomes Protocol streamlines the lifecycle of real estate financing and development for diaspora communities—from property verification and tokenization to mortgage liquidity pools, milestone-based escrow disbursements, and compliant secondary market trading. By utilizing Soroban smart contracts, USDC escrows, oracle-verified land titles, and compliant secondary trading, it replaces slow, paper-based real estate transactions with a transparent, on-chain alternative.
 
----
+It's the bridge between diaspora home financing and blockchain efficiency.
 
-## 🔑 Key Features
+## Motivation
+Diaspora communities face high operational overhead, lack of transparency, and risk of fraud when trying to finance and build homes in their home countries. Traditional mortgages are difficult to secure internationally, and funds sent to individuals are often mismanaged.
 
-- **Decentralized Multi-Signature Quorum**: Enforces consensus requirements (e.g., $m$-of-$n$ approvals) before any treasury payout can be executed.
-- **Timelocked Execution (Delay Phase)**: Imposes a mandatory waiting period between proposal approval and execution to give the governing community a response window and prevent rapid exploit attacks.
-- **Granular Role-Based Access Control (RBAC)**: Distinct permissions for System Admins and Co-signers managed in a dedicated roles registry.
-- **Anti-Spam Proposal Fees**: Requires proposers to deposit a configurable fee to submit proposals, economically discouraging spam.
-- **Self-Service Treasury Vault**: Secure user deposit and withdrawal mechanisms with integrated safeguards against double-spending and reentrancy.
+StellarHomes makes international property financing secure, transparent, and liquid:
 
----
+*   **Automate Compliance:** Enforce investor and borrower whitelisting on-chain. Only KYC-cleared wallets can hold or trade property equity (`PROP`) tokens.
+*   **Direct-to-Builder Funding:** Escrow mortgage disbursements securely and release funds directly to verified local builders and suppliers, ensuring funds never touch the borrower directly.
+*   **Govern Disbursements:** Protect capital by requiring trustee sign-offs and licensed surveyor reports on construction milestones before releasing funds.
+*   **Inject Secondary Liquidity:** Enable property owners and mortgage investors to trade their tokenized equity (`PROP` and `MORT` tokens) peer-to-peer via atomic swaps on the Stellar DEX.
 
-## 🛠️ Tech Stack
+## Features
+*   **Property Registry Contract** — Manages property verification, oracle-verified valuations, and `PROP` token minting/clawbacks via the Stellar Asset Contract (SAC).
+*   **Mortgage Pool Contract** — Manages the global mortgage liquidity pool (`POOL-HC`), collateral locking (maximum 70% LTV), interest repayment distribution, and default liquidations.
+*   **Build Escrow Contract** — Milestone-based escrow holding construction funds and releasing them in tranches directly to pre-vetted builders and suppliers.
+*   **Oracle Integration** — Off-chain data feeds that verify land titles with registries (MLHUD/Lands Commission) and write property valuations and milestone approvals on-chain.
+*   **Secondary Market Integration** — Facilitates atomic, compliant trading of `PROP` and `MORT` tokens on the Stellar DEX, ensuring all participants are KYC-cleared.
+*   **Stablecoin Settlement** — All deposits, mortgage loans, milestone payments, and secondary trades settle in USDC on Stellar with sub-cent fees and 3–5 second finality.
 
-StellarVault is built using modern tooling across both the on-chain and off-chain layers:
+## Stack
+*   **Frontend:** Next.js, TypeScript, Vanilla CSS Modules
+*   **Wallet:** Freighter + `@stellar/freighter-api`
+*   **Smart Contracts:** Rust, Soroban SDK v22
+*   **Backend:** Node.js, Express, TypeScript, Stellar SDK (`@stellar/stellar-sdk` v13)
+*   **Database:** PostgreSQL (for off-chain metadata, user profiles, and milestones)
 
-### Smart Contracts (On-Chain)
-- **Rust**: Secure, type-safe programming language.
-- **Soroban SDK**: SDK for authoring smart contracts deployed on the Stellar network.
-- **Cargo**: Build system and test runner for compiled WASM artifacts.
+## Running it locally
 
-### Web Application (Off-Chain)
-- **Next.js (Pages Router)**: React-based framework for page routing and UI layout.
-- **React**: State management for real-time wallet balances, clock loops, and active proposals.
-- **TypeScript**: Static typing for custom components and props interface safety.
-- **Tailwind CSS**: Utility-first CSS classes for layout layouts and customized dark mode styles.
-
----
-
-## 🏗️ System Architecture
-
-StellarVault is structured as an interactive suite of modular Soroban contracts deployed on the Stellar network.
-
-### High-Level Components
-
-```mermaid
-graph TD
-    User([User / Admin]) -->|Configures roles / quorum| AccessRoles[AccessRoles Contract]
-    Proposer([Co-Signer Proposer]) -->|Creates Proposal & Pays Fee| Proposal[TransactionProposal Contract]
-    Signer([Co-Signer]) -->|Confirms Proposal| Proposal
-    Proposal -->|Validates Signer Roles| AccessRoles
-    Proposal -->|Enforces Execution Delay| DelayTime[DelayTime Contract]
-    Proposal -->|Invokes Withdrawal| Treasury[Treasury Contract]
-    Treasury -->|Disburses Funds| Recipient([Recipient Address])
-```
-
-### Modular Smart Contracts
-
-The system logic is divided into four main roles, all integrated within the workspace:
-
-1. **`AccessRoles`**: Handles registry of co-signers, addition/removal of signers by the administrator, and system quorum enforcement (validates that $0 < \text{quorum} \le \text{total signers}$).
-2. **`DelayTime`**: Manages execution delay configurations (up to a maximum safety threshold of 30 days) and validates whether the timelock duration has elapsed for a approved proposal.
-3. **`Treasury`**: Manages token reserves, handles user deposits and personal withdrawals, and executes authorized transfers only upon direct verification from the proposal contract.
-4. **`TransactionProposal`**: Governs proposal state transitions (`PENDING` → `CONFIRMED` → `EXECUTED` / `CANCELLED`), tracks individual confirmations (with double-voting protection), and manages proposal fee structures.
-
----
-
-## 📂 Project Structure
-
-```
-StellarVault/
-├── contracts/                  # Soroban Smart Contracts
-│   ├── src/
-│   │   └── lib.rs              # Contract logic (AccessRoles, Delay, Treasury, Proposals)
-│   ├── Cargo.toml              # Rust workspace dependencies
-│   └── Cargo.lock
-├── frontend/                   # Client Web Application
-│   ├── src/
-│   │   ├── pages/              # React components & UI views (Next.js Pages router)
-│   │   └── styles/             # Tailwind CSS stylesheets
-│   ├── public/                 # Static asset delivery
-│   ├── tsconfig.json           # TypeScript compilation configuration
-│   └── package.json            # Node.js dependencies & scripts
-├── ARCHITECTURE.md             # Detailed technical specifications & flowcharts
-└── README.md                   # Project Overview & Quickstart
-```
-
----
-
-## 🚀 Getting Started
+You can run and build the entire full-stack application (smart contracts, frontend, and backend) from the root directory of the project.
 
 ### Prerequisites
+*   Node.js ≥ 20.0.0
+*   Rust (latest stable) + `wasm32-unknown-unknown` target
+*   Stellar CLI — `cargo install stellar-cli`
+*   [Freighter Wallet](https://www.freighter.app/) browser extension
 
-To compile the smart contracts and run the frontend application locally, make sure you have the following installed:
-- [Rust & Cargo](https://rustup.rs/) (latest stable version)
-- [Soroban CLI](https://soroban.stellar.org/docs/getting-started/setup#install-the-soroban-cli)
-- [Node.js](https://nodejs.org/) (v18 or higher) & `npm`
-
----
-
-### 🔨 Smart Contract Setup
-
-#### 1. Compile Contracts
-Build the Soroban WASM bytecodes from the repository root:
+### 1. Setup Frontend & Backend
+Install dependencies for both folders:
 ```bash
-cargo build --workspace --target wasm32-unknown-unknown --release
+npm --prefix frontend install
+npm --prefix backend install
 ```
 
-#### 2. Run Tests
-Verify the contract workflow using Rust's integrated test harness:
-```bash
-cargo test --workspace
-```
-The workspace includes unit and integration tests verifying roles setup, delay calculation, treasury deposits/withdrawals, and proposal confirmation/execution lifecycles.
-
----
-
-### 💻 Frontend Client Setup
-
-The frontend is built using **Next.js**, **React**, **TypeScript**, and **Tailwind CSS**.
-
-#### 1. Install Dependencies
-Navigate to the `frontend` folder and install all project dependencies:
-```bash
-cd frontend
-npm install
+Configure `backend/.env` (use `backend/.env.example` as a template):
+```env
+PORT=4000
+STELLAR_NETWORK=testnet
+STELLAR_RPC_URL=https://soroban-testnet.stellar.org
+PROPERTY_REGISTRY_CONTRACT_ID=your_deployed_property_registry_contract_id
+MORTGAGE_POOL_CONTRACT_ID=your_deployed_mortgage_pool_contract_id
+BUILD_ESCROW_CONTRACT_ID=your_deployed_build_escrow_contract_id
 ```
 
-#### 2. Run the Development Server
-Launch the local development environment:
+### 2. Run the Application
+Start the development servers from the root directory:
 ```bash
-npm run dev
+# Start the Next.js frontend (http://localhost:3000)
+npm run frontend:dev
+
+# Start the Express backend (http://localhost:4000)
+npm run backend:dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
----
+### 3. Build & Test Contracts
+To build and test the Soroban smart contracts:
+```bash
+cd contracts
+cargo build --target wasm32-unknown-unknown --release
+cargo test
+```
 
-## 🛡️ Security Boundaries
+## How the StellarHomes Protocol Works
+The protocol coordinates the entire financing and construction lifecycle on-chain through six phases:
 
-StellarVault is designed around clear interface boundaries to minimize the attack surface:
-- **Authorization Separation**: Admins can configure the signers and settings, but they cannot propose or sign treasury transactions unless they are explicitly assigned the signer role.
-- **Double-Spending Prevention**: The treasury contract maintains strict balances, verifying total reserves before completing any external transfer.
-- **Quorum & Timelocks**: Even if a signer's private key is compromised, no funds can be drained instantly; the hacker would need to compromise a quorum of signers, and the community has a timelocked window to cancel the transaction.
+1.  **Property Submission & Verification**: A trustee submits title documents; the oracle verifies them with local land registries and records the valuation.
+2.  **Tokenization**: `PROP` tokens representing fractional equity are minted with compliance flags (`AUTH_REQUIRED` and `CLAWBACK_ENABLED`) enabled.
+3.  **Collateral & Mortgage Funding**: The diaspora member locks `PROP` tokens as collateral in the `MortgagePool` to secure a USDC mortgage loan (up to 70% LTV).
+4.  **Escrow Funding**: The mortgage loan is drawn down from investor liquidity and deposited directly into the `BuildEscrow` contract.
+5.  **Milestone-Gated Disbursements**: As construction progresses, the trustee uploads milestone evidence to IPFS. The oracle verifies the progress, and the escrow contract releases the next USDC tranche directly to the builder.
+6.  **Repayment & Exit**: The borrower makes monthly repayments in USDC, which are distributed to mortgage investors. Once fully repaid, the `PROP` collateral is unlocked.
 
----
+## Roadmap
+*   **Automated Land Registry Oracles**: Integrate APIs directly with West African land registries (MLHUD, Lands Commission) for instant title validation.
+*   **Yield-Bearing Escrows**: Integrate idle escrow funds with Soroban-based lending protocols (e.g. Blend) to earn yield during construction phases.
+*   **Decentralized Surveyor Network**: Transition from a single oracle to a decentralized network of licensed surveyors staking tokens to verify property valuations.
+*   **Historical Build Indexer**: Set up a custom indexer to track and display construction progress milestones, photos, and historical payouts.
 
-## 🤝 Contributing
+## Documentation
+*   [Architecture](ARCHITECTURE.md): Core design principles, contract interactions, and system architecture.
+*   [Contributing Guide](CONTRIBUTING.md): Code formatting, branching style, and pull request guidelines.
 
-We welcome contributions to StellarVault! To contribute, please follow these guidelines:
-
-### 1. Fork & Branch
-- Fork the repository and create your branch from `main`:
-  ```bash
-  git checkout -b feature/your-feature-name
-  ```
-
-### 2. Code Standards
-- **Smart Contracts**: 
-  - Format your code before submitting: `cargo fmt`
-  - Run the linter: `cargo clippy`
-  - Run all tests to make sure everything passes: `cargo test --workspace`
-- **Frontend**:
-  - Run the linter: `npm run lint`
-  - Ensure TypeScript type checking passes.
-
-### 3. Commit Messages
-- Use clear, descriptive commit messages.
-- Prefix commits to indicate the context of changes (e.g., `feat(contracts):`, `fix(frontend):`, `docs:`).
-
-### 4. Submitting a Pull Request
-- Push your changes to your fork and submit a Pull Request.
-- Provide a clear description of the problem solved, the changes implemented, and how they were tested.
-- Ensure all checks and tests pass.
+## License
+MIT
